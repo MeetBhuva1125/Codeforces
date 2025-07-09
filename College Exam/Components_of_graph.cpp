@@ -1,8 +1,4 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <set>
-#include <numeric>
+#include <bits/stdc++.h>
 using namespace std;
 
 // DFS function to find the size of a connected component
