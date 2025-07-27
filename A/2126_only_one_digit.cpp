@@ -3,8 +3,8 @@ using namespace std;
 typedef long long ll;
 #define forloop(i, a, b) for (int i=a; i<b; i++)
 #define forloopR(i, a, b) for(int i=a; i>=b; i--)
-#define v1d(type, name, n) vector<type> name(n)
-#define v2d(type, name, m, n) vector<vector<type>> name(m, vector<type>(n))
+#define vI vector<int>
+#define VII vector<vector<int>> 
 
 int main(){
     ios_base::sync_with_stdio(false);
@@ -14,6 +14,15 @@ int main(){
     cin >> t;
 
     while(t--){
-        
+        int x;
+        cin >> x;
+
+        int mini = INT_MAX;
+        while(x>0){
+            mini = min(mini,x%10);
+            // cout << mini;
+            x/=10;
+        }
+        cout << mini << "\n";
     }
 }

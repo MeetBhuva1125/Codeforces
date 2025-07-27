@@ -1,119 +1,138 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <set>
-#include <numeric>
+#include<bits/stdc++.h>
 using namespace std;
 
-// DFS function to find the size of a connected component
-void dfs(int u, vector<bool>& visited, const vector<vector<int>>& adj, int& current_size) {
-    visited[u] = true;
-    current_size++;
-    for (int v : adj[u]) {
-        if (!visited[v]) {
-            dfs(v, visited, adj, current_size);
-        }
+typedef long long ll;
+
+#define forloop(i, a, b) for (int i=a; i<b; i++)
+#define forloopR(i, a, b) for(int i=a; i>=b; i--)
+
+#define vI(type, name, n) vector<type> name(n)
+#define vII(type, name, m, n) vector<vector<type>> name(m, vector<type>(n))
+
+/**
+ * @brief Solves the frog jumping problem using dynamic programming.
+ *
+ * The problem asks for the minimum cost to reach the last stone, given that the frog
+ * can jump at most 'k' steps from its current stone. The cost of a jump is the
+ * absolute difference in height between the current stone and the target stone.
+ *
+ * @param n The total number of stones.
+ * @param k The maximum jump distance the frog can make.
+ * @param height A vector containing the heights of each stone.
+ * @return The minimum cost to reach the last stone.
+ */
+int solve(int n, int k, vector<int>& height){
+    // dp[i] will store the minimum cost to reach stone 'i'.
+    // Initialize with INT_MAX, except for dp[0] which is 0 (cost to reach first stone is 0).
+    vector<int> dp(n, INT_MAX);
+
+    dp[0] = 0; // Base case: Cost to reach the first stone (index 0) is 0.
+
+    // Debugging output: Initial state of the DP table
+    cout << "--- DP Calculation Steps ---" << endl;
+    cout << "Initial DP table: ";
+    for(int val : dp) {
+        if (val == INT_MAX) cout << "INF ";
+        else cout << val << " ";
     }
+    cout << endl << endl;
+
+    // Iterate through each stone from the second stone (index 1) up to the last stone.
+    for(int i=1; i<n; i++){
+        cout << "Calculating minimum cost to reach stone " << i << " (height: " << height[i] << ")" << endl;
+
+        // For each stone 'i', consider all possible previous stones 'i-j' from which the frog could have jumped.
+        // 'j' represents the jump distance, ranging from 1 to 'k'.
+        for(int j=1; j<=k; j++){
+            // Check if the previous stone 'i-j' is a valid index (non-negative).
+            if(i - j >= 0){
+                // Calculate the cost of the current jump from stone 'i-j' to stone 'i'.
+                int current_jump_cost = abs(height[i] - height[i-j]);
+                // Calculate the total candidate cost to reach stone 'i' via stone 'i-j'.
+                int candidate_total_cost = dp[i-j] + current_jump_cost;
+
+                // Debugging output for current jump consideration
+                cout << "  Considering jump from stone " << i-j << " (height: " << height[i-j] << ") to stone " << i << endl;
+                cout << "    Cost to reach stone " << i-j << " (dp[" << i-j << "]): " << dp[i-j] << endl;
+                cout << "    Cost of jump from " << i-j << " to " << i << ": |" << height[i] << " - " << height[i-j] << "| = " << current_jump_cost << endl;
+                cout << "    Total candidate cost via stone " << i-j << ": " << candidate_total_cost << endl;
+
+                // If the candidate total cost is less than the current minimum cost to reach stone 'i', update dp[i].
+                if (candidate_total_cost < dp[i]) {
+                    cout << "    Updating dp[" << i << "] from " << (dp[i] == INT_MAX ? string("INF") : to_string(dp[i])) << " to " << candidate_total_cost << endl;
+                } else {
+                    cout << "    Current dp[" << i << "] (" << (dp[i] == INT_MAX ? string("INF") : to_string(dp[i])) << ") is already better or equal. No update." << endl;
+                }
+                dp[i] = min(dp[i], candidate_total_cost); // Update dp[i] with the minimum cost found so far.
+            } else {
+                // If 'i-j' is out of bounds, this jump is not possible.
+                cout << "  Cannot jump from stone " << i-j << " as it's out of bounds (index < 0)." << endl;
+            }
+        }
+        cout << "  Finished considering all possible jumps to stone " << i << "." << endl;
+        cout << "  Current state of dp[" << i << "]: " << dp[i] << endl;
+        // Debugging output: State of DP table after processing stone 'i'
+        cout << "  DP table after processing stone " << i << ": ";
+        for(int val : dp) {
+            if (val == INT_MAX) cout << "INF ";
+            else cout << val << " ";
+        }
+        cout << endl << endl;
+    }
+
+    // Debugging output: Final state of the DP table and the result
+    cout << "--- DP Calculation Complete ---" << endl;
+    cout << "Final DP table: ";
+    for(int val : dp) {
+        if (val == INT_MAX) cout << "INF ";
+        else cout << val << " ";
+    }
+    cout << endl;
+
+    cout << "Minimum cost to reach the last stone (index " << n-1 << ") is: " << dp[n-1] << endl;
+    return dp[n-1]; // Return the minimum cost to reach the last stone.
 }
 
-// Helper function to check if a given threshold is valid
-bool isValidThreshold(int threshold, int num_cities, const vector<pair<int, int>>& flights, const vector<int>& air_indices, int k) {
-    // 1. Build the graph only with nodes meeting the threshold
-    vector<vector<int>> adj(num_cities);
-    vector<int> valid_nodes;
-    for (int i = 0; i < num_cities; ++i) {
-        if (air_indices[i] >= threshold) {
-            valid_nodes.push_back(i);
+/**
+ * @brief Main function to handle input, call the solve function, and output results.
+ * @return 0 if the program executes successfully.
+ */
+int main(){
+    // Optimize C++ standard streams for faster input/output operations.
+    ios_base::sync_with_stdio(false); // Unties C++ streams from C standard streams.
+    cin.tie(nullptr); // Unties cin from cout, preventing flushing of cout before cin operations.
+    int t;
+    cout << "Enter the number of test cases: ";
+    cin >> t; // Read the number of test cases.
+
+    // Loop through each test case.
+    while(t--){
+        int n, k;
+        cout << "--- New Test Case ---" << endl;
+        cout << "Enter number of stones (n) and max jump distance (k): ";
+        cin >> n >> k; // Read the number of stones and maximum jump distance.
+
+        vI(int, height, n); // Declare a vector to store stone heights.
+        cout << "Enter " << n << " stone heights: ";
+        // Read the heights of the stones.
+        forloop(i, 0, n){
+            cin >> height[i];
         }
-    }
 
-    // Optimization: not enough nodes to form a component of size k
-    if (valid_nodes.size() < k) {
-        return false;
-    }
-
-    for (const auto& flight : flights) {
-        // Check if both cities in a flight meet the air index criteria
-        if (air_indices[flight.first] >= threshold && air_indices[flight.second] >= threshold) {
-            adj[flight.first].push_back(flight.second);
-            adj[flight.second].push_back(flight.first);
+        // Output the input parameters for the current test case.
+        cout << "Input: n=" << n << ", k=" << k << ", heights=[";
+        forloop(i, 0, n){
+            cout << height[i] << (i == n-1 ? "" : ", ");
         }
+        cout << "]" << endl;
+
+        cout << "Calling solve function..." << endl;
+        // Call the solve function with the current test case parameters.
+        int result = solve(n, k, height);
+        // Output the final result for the current test case.
+        cout << "Final result for this test case: " << result << endl;
     }
 
-    // 2. Find the largest connected component in the filtered graph
-    vector<bool> visited(num_cities, false);
-    int max_component_size = 0;
-
-    for (int node : valid_nodes) {
-        if (!visited[node]) {
-            int current_size = 0;
-            dfs(node, visited, adj, current_size);
-            max_component_size = max(max_component_size, current_size);
-        }
-    }
-
-    return max_component_size >= k;
+    return 0; // Indicate successful program execution.
 }
 
-// Main function to find the maximum threshold
-int findMaxThreshold(int num_cities, const vector<pair<int, int>>& flights, const vector<int>& air_indices, int k) {
-    // Get unique, sorted air index values for binary search
-    set<int> unique_indices_set(air_indices.begin(), air_indices.end());
-    vector<int> unique_indices(unique_indices_set.begin(), unique_indices_set.end());
-    
-    if (unique_indices.empty()) {
-        return -1;
-    }
-
-    int low = 0;
-    int high = unique_indices.size() - 1;
-    int ans = -1;
-
-    while (low <= high) {
-        int mid_idx = low + (high - low) / 2;
-        int potential_threshold = unique_indices[mid_idx];
-
-        if (isValidThreshold(potential_threshold, num_cities, flights, air_indices, k)) {
-            // This threshold works, try for a higher one
-            ans = potential_threshold;
-            low = mid_idx + 1;
-        } else {
-            // This threshold is too high, try a lower one
-            high = mid_idx - 1;
-        }
-    }
-
-    return ans;
-}
-
-// --- Example Usage ---
-int main() {
-    // 8 cities, numbered 0 to 7
-    int num_cities = 8;
-    
-    // Air index for each city
-    vector<int> air_indices = {10, 20, 30, 80, 90, 100, 5, 110};
-    
-    // Flights between cities
-    vector<pair<int, int>> flights = {
-        {0, 1}, {1, 2}, {0, 2},  // Component 1 (low air index)
-        {3, 4}, {4, 5}, {3, 5},  // Component 2 (high air index)
-        {6, 7}                   // Component 3
-    };
-    
-    // We need a component of at least size 3
-    int k = 3;
-
-    int max_threshold = findMaxThreshold(num_cities, flights, air_indices, k);
-
-    if (max_threshold != -1) {
-        cout << "The maximum threshold to get a component of size at least " << k << " is: " << max_threshold << endl;
-        // Expected output: 80
-        // At threshold 80, cities 3, 4, 5 (air indices 80, 90, 100) are connected and form a component of size 3.
-        // At threshold 90, only cities 4, 5, 7 would remain, and the largest component {4, 5} is size 2, which is < k.
-    } else {
-        cout << "No threshold allows for a component of size " << k << "." << endl;
-    }
-
-    return 0;
-}

@@ -14,6 +14,18 @@ int main(){
     cin >> t;
 
     while(t--){
-        
+        int n;
+        cin >> n;
+
+        int max_k = 0;
+        forloop(i,0,n){
+            int a;
+            cin >> a;
+            int diff = abs(a-i-1);
+            if(diff != 0){
+                max_k = gcd(max_k, diff);
+            }
+        }
+        cout << max_k << "\n";
     }
 }
