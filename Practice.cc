@@ -90,7 +90,7 @@ void LevelOrder(TreeNode *root){
     cout << "\n" << max_height;
 }
 
-void StrinStreamInput(){
+void StringStreamInput(){
         cin.ignore();
         string line;
         getline(cin, line);
