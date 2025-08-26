@@ -1,24 +1,36 @@
 #include<bits/stdc++.h>
 using namespace std;
-
 typedef long long ll;
-typedef double dd;
-typedef pair<int, int> pii;
-typedef pair<long long, long long> pll;
-
-// Functions as alternatives to macros (more type-safe)
-template<typename T>
-vector<T> v1d_t(int n) { return vector<T>(n,0); }
-template<typename T>
-vector<vector<T>> v2d_t(int m, int n) { return vector<vector<T>>(m, vector<T>(n,0)); }
-
 #define forloop(i, a, b) for (int i=a; i<b; i++)
 #define forloopR(i, a, b) for(int i=a; i>=b; i--)
 #define v1d(type, name, n) vector<type> name(n)
 #define v2d(type, name, m, n) vector<vector<type>> name(m, vector<type>(n))
 
 void solve(){
-    
+    int n;
+    cin >> n;
+    string a;
+    cin >> a;
+    int m;
+    cin >> m;
+    string b,c;
+    cin >> b;
+    cin >> c;
+
+    deque<char> dq(a.begin(),a.end());
+    forloop(i,0,m){
+        if(c[i] == 'V'){
+            dq.push_front(b[i]);
+        }
+        else{
+            dq.push_back(b[i]);
+        }
+    }
+
+    for(char ch:dq){
+        cout << ch;
+    }
+    cout << "\n";
 }
 
 int main(){

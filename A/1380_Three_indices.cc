@@ -18,7 +18,20 @@ vector<vector<T>> v2d_t(int m, int n) { return vector<vector<T>>(m, vector<T>(n,
 #define v2d(type, name, m, n) vector<vector<type>> name(m, vector<type>(n))
 
 void solve(){
-    
+    int n;
+    cin >> n;
+    v1d(int,a,n);
+    forloop(i,0,n){
+        cin >> a[i];
+    }
+    forloop(i,1,n-1){
+        if(a[i-1]<a[i] && a[i]>a[i+1]){
+            cout << "YES\n";
+            cout << i << " " << i+1 << " " << i+2 <<"\n";
+            return;
+        }
+    }
+    cout << "NO\n";
 }
 
 int main(){

@@ -1,24 +1,27 @@
 #include<bits/stdc++.h>
 using namespace std;
-
 typedef long long ll;
-typedef double dd;
-typedef pair<int, int> pii;
-typedef pair<long long, long long> pll;
-
-// Functions as alternatives to macros (more type-safe)
-template<typename T>
-vector<T> v1d_t(int n) { return vector<T>(n,0); }
-template<typename T>
-vector<vector<T>> v2d_t(int m, int n) { return vector<vector<T>>(m, vector<T>(n,0)); }
-
 #define forloop(i, a, b) for (int i=a; i<b; i++)
 #define forloopR(i, a, b) for(int i=a; i>=b; i--)
 #define v1d(type, name, n) vector<type> name(n)
 #define v2d(type, name, m, n) vector<vector<type>> name(m, vector<type>(n))
 
 void solve(){
-    
+    int n,x;
+    cin >> n >> x;
+
+    ll max_btfl = 0;
+    ll min_btfl = 0;
+
+    forloop(i,0,n){
+        int a;
+        cin >> a;
+        min_btfl+=a;
+        // cout << ceil(a/(x*1.0)) << " ";
+        max_btfl += (a+x-1)/x;
+    }
+    // cout << "\n";
+    cout << (min_btfl+x-1)/x << " " << max_btfl << "\n";
 }
 
 int main(){
